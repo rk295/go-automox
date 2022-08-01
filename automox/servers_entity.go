@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-const automoxTimeFormat = "2006-01-02T15:04:05.000Z"
+const automoxTimeFormat = "2006-01-02T15:04:05-0700"
 
 type AutomoxUptime int64
 
@@ -35,7 +35,8 @@ func (at *AutomoxTime) UnmarshalJSON(data []byte) error {
 		return nil
 	}
 
-	t, err := time.Parse(automoxTimeFormat, s)
+	// Its always UTC
+	t, err := time.ParseInLocation(automoxTimeFormat, s, time.UTC)
 	if err != nil {
 		*at = AutomoxTime(time.Time{})
 		return err

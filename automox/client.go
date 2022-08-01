@@ -97,19 +97,6 @@ func (am *Client) makeRequest(r *http.Request, v interface{}) (*http.Response, e
 			fmt.Printf("%s: %s\n", k, v)
 		}
 	}
-	// bodyBytes, err := io.ReadAll(res.Body)
-	// if err != nil {
-	// 	fmt.Print(err)
-	// 	return nil, err
-	// }
-	// bodyString := string(bodyBytes)
-	// fmt.Println(bodyString)
-
-	// err = json.NewDecoder(res.Body).Decode(&v)
-	// if err != nil {
-	// 	fmt.Println("error decoding json: ", err)
-	// 	return res, err
-	// }
 	return res, json.NewDecoder(res.Body).Decode(&v)
 }
 

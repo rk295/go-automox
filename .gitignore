@@ -5,7 +5,6 @@
 ### Local ###
 bin
 bin/*
-go-freshservice
 .coverage.html
 
 ### Git ###

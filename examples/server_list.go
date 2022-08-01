@@ -23,17 +23,8 @@ func main() {
 	}
 
 	for _, s := range s {
-		fmt.Printf("%s uptime=%v\n", s.Name, s.ID)
+		fmt.Printf("%s uptime=%v\n", s.Name, s.Uptime)
 	}
 
-	packageList, err := api.Servers().GetPackages(ctx, s[0].ID)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("===== Server Packages =====")
-	for _, p := range *packageList {
-		fmt.Printf("%s\n", p.Name)
-	}
-
-	fmt.Println("number of packages:", len(*packageList))
+	fmt.Println("number of servers:", len(s))
 }

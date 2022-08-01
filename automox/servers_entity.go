@@ -2,29 +2,26 @@ package automox
 
 import (
 	"strconv"
+	"strings"
 	"time"
 )
 
 type AutomoxUptime int64
 
 func (a *AutomoxUptime) UnmarshalJSON(data []byte) error {
-	v := string(data)
-	// fmt.Printf("attempting to parse %s\n", v)
-	i, err := strconv.ParseInt(v, 10, 64)
-	if err == nil {
+	// Remove JSON quotes from the string
+	s := strings.Replace(string(data), "\"", "", -1)
+
+	// Convert the string to an int64
+	i, err := strconv.ParseInt(s, 10, 64)
+	if err != nil {
 		return err
 	}
-	// fmt.Printf("parsed %d\n", i)
 	*a = AutomoxUptime(i)
 	return nil
 }
 
 type Servers []ServerDetails
-
-// Server holds the details of a specific Automox server
-// type Server struct {
-// 	Details ServerDetails `json:"details"`
-// }
 
 // ServerDetails are the details related to a specific server in Automox
 type ServerDetails struct {

@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+const automoxTimeFormat = "2006-01-02T15:04:05.000Z"
+
 type AutomoxUptime int64
 
 func (a *AutomoxUptime) UnmarshalJSON(data []byte) error {
@@ -21,29 +23,47 @@ func (a *AutomoxUptime) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+type AutomoxTime time.Time
+
+func (at *AutomoxTime) UnmarshalJSON(data []byte) error {
+	// Remove JSON quotes from the string
+	s := strings.Replace(string(data), "\"", "", -1)
+
+	// Some values are null or empty, so we can't parse them
+	if s == "null" || s == "" {
+		*at = AutomoxTime(time.Time{})
+		return nil
+	}
+
+	t, err := time.Parse(automoxTimeFormat, s)
+	if err != nil {
+		*at = AutomoxTime(time.Time{})
+		return err
+	}
+	*at = AutomoxTime(t)
+	return nil
+}
+
 type Servers []ServerDetails
 
 // ServerDetails are the details related to a specific server in Automox
 type ServerDetails struct {
-	ID              int64         `json:"id"`
-	OsVersionID     int64         `json:"os_version_id"`
-	ServerGroupID   int64         `json:"server_group_id"`
-	OrganizationID  int64         `json:"organization_id"`
-	UUID            string        `json:"uuid"`
-	Name            string        `json:"name"`
-	InstanceID      string        `json:"instance_id"`
-	RefreshInterval int64         `json:"refresh_interval"`
-	LastUpdateTime  string        `json:"last_update_time"`
-	LastRefreshTime string        `json:"last_refresh_time"`
-	Uptime          AutomoxUptime `json:"uptime"`
-	NeedsReboot     bool          `json:"needs_reboot"`
-	Timezone        string        `json:"timezone"`
-	Tags            []string      `json:"tags"`
-	Deleted         bool          `json:"deleted"`
-	// TODO: Fails unmarshalling:
-	// 2022/07/31 07:10:12 parsing time "\"2022-07-21T10:10:06+0000\"" as "\"2006-01-02T15:04:05Z07:00\"": cannot parse "+0000\"" as "Z07:00"
-	// CreateTime                    time.Time           `json:"create_time"`
-	CreateTime                    string              `json:"create_time"`
+	ID                            int64               `json:"id"`
+	OsVersionID                   int64               `json:"os_version_id"`
+	ServerGroupID                 int64               `json:"server_group_id"`
+	OrganizationID                int64               `json:"organization_id"`
+	UUID                          string              `json:"uuid"`
+	Name                          string              `json:"name"`
+	InstanceID                    string              `json:"instance_id"`
+	RefreshInterval               int64               `json:"refresh_interval"`
+	LastUpdateTime                string              `json:"last_update_time"`
+	LastRefreshTime               string              `json:"last_refresh_time"`
+	Uptime                        AutomoxUptime       `json:"uptime"`
+	NeedsReboot                   bool                `json:"needs_reboot"`
+	Timezone                      string              `json:"timezone"`
+	Tags                          []string            `json:"tags"`
+	Deleted                       bool                `json:"deleted"`
+	CreateTime                    AutomoxTime         `json:"create_time"`
 	OsVersion                     string              `json:"os_version"`
 	OsName                        string              `json:"os_name"`
 	OsFamily                      string              `json:"os_family"`
@@ -74,13 +94,11 @@ type ServerDetails struct {
 	RebootIsDelayedByNotification bool                `json:"reboot_is_delayed_by_notification"`
 	IsDelayedByUser               bool                `json:"is_delayed_by_user"`
 	RebootIsDelayedByUser         bool                `json:"reboot_is_delayed_by_user"`
-	// TODO: Fails unmarshalling, see above
-	// LastDisconnectTime            time.Time           `json:"last_disconnect_time"`
-	LastDisconnectTime string `json:"last_disconnect_time"`
-	NeedsAttention     bool   `json:"needs_attention"`
-	SerialNumber       string `json:"serial_number"`
-	Status             Status `json:"status"`
-	LastLoggedInUser   string `json:"last_logged_in_user"`
+	LastDisconnectTime            AutomoxTime         `json:"last_disconnect_time"`
+	NeedsAttention                bool                `json:"needs_attention"`
+	SerialNumber                  string              `json:"serial_number"`
+	Status                        Status              `json:"status"`
+	LastLoggedInUser              string              `json:"last_logged_in_user"`
 }
 type Disks struct {
 	Size string `json:"SIZE"`
@@ -144,46 +162,42 @@ type Status struct {
 type Packages []PackageDetails
 
 type PackageDetails struct {
-	AgentSeverity string `json:"agent_severity"`
-	CreateTime    string `json:"create_time"`
-	// CreateTime                    time.Time `json:"create_time"`
-	Cves          []string `json:"cves"`
-	CveScore      string   `json:"cve_score"`
-	DeferredUntil string   `json:"deferred_until"`
-	// DeferredUntil                 time.Time `json:"deferred_until"`
-	DisplayName        string `json:"display_name"`
-	GroupDeferredUntil string `json:"group_deferred_until"`
-	// GroupDeferredUntil            time.Time `json:"group_deferred_until"`
-	GroupIgnored                  bool   `json:"group_ignored"`
-	ID                            int64  `json:"id"`
-	Ignored                       bool   `json:"ignored"`
-	Impact                        int64  `json:"impact"`
-	Installed                     bool   `json:"installed"`
-	IsManaged                     bool   `json:"is_managed"`
-	IsUninstallable               bool   `json:"is_uninstallable"`
-	Name                          string `json:"name"`
-	OrganizationID                int64  `json:"organization_id"`
-	OsName                        string `json:"os_name"`
-	OsVersion                     string `json:"os_version"`
-	OsVersionID                   int    `json:"os_version_id"`
-	PackageID                     int64  `json:"package_id"`
-	PackageVersionID              int64  `json:"package_version_id"`
-	PatchClassificationCategoryID int    `json:"patch_classification_category_id"`
-	PatchScope                    string `json:"patch_scope"`
-	Repo                          string `json:"repo"`
-	RequiresReboot                bool   `json:"requires_reboot"`
-	SecondaryID                   string `json:"secondary_id"`
-	ServerID                      int64  `json:"server_id"`
-	Severity                      string `json:"severity"`
-	SoftwareID                    int64  `json:"software_id"`
-	Version                       string `json:"version"`
+	AgentSeverity                 string      `json:"agent_severity"`
+	CreateTime                    AutomoxTime `json:"create_time"`
+	Cves                          []string    `json:"cves"`
+	CveScore                      string      `json:"cve_score"`
+	DeferredUntil                 AutomoxTime `json:"deferred_until"`
+	DisplayName                   string      `json:"display_name"`
+	GroupDeferredUntil            AutomoxTime `json:"group_deferred_until"`
+	GroupIgnored                  bool        `json:"group_ignored"`
+	ID                            int64       `json:"id"`
+	Ignored                       bool        `json:"ignored"`
+	Impact                        int64       `json:"impact"`
+	Installed                     bool        `json:"installed"`
+	IsManaged                     bool        `json:"is_managed"`
+	IsUninstallable               bool        `json:"is_uninstallable"`
+	Name                          string      `json:"name"`
+	OrganizationID                int64       `json:"organization_id"`
+	OsName                        string      `json:"os_name"`
+	OsVersion                     string      `json:"os_version"`
+	OsVersionID                   int         `json:"os_version_id"`
+	PackageID                     int64       `json:"package_id"`
+	PackageVersionID              int64       `json:"package_version_id"`
+	PatchClassificationCategoryID int         `json:"patch_classification_category_id"`
+	PatchScope                    string      `json:"patch_scope"`
+	Repo                          string      `json:"repo"`
+	RequiresReboot                bool        `json:"requires_reboot"`
+	SecondaryID                   string      `json:"secondary_id"`
+	ServerID                      int64       `json:"server_id"`
+	Severity                      string      `json:"severity"`
+	SoftwareID                    int64       `json:"software_id"`
+	Version                       string      `json:"version"`
 }
 
 type CommandQueue []CommandQueueItem
 
 type CommandQueueItem struct {
-	CommandTypeName string `json:"command_type_name"`
-	Args            string `json:"args"`
-	ExecTime        string `json:"exec_time"`
-	// ExecTime        time.Time `json:"exec_time"`
+	CommandTypeName string      `json:"command_type_name"`
+	Args            string      `json:"args"`
+	ExecTime        AutomoxTime `json:"exec_time"`
 }

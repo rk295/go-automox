@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
+	"text/tabwriter"
 )
 
 const serversURL = "/api/servers"
@@ -104,4 +106,32 @@ func (c *ServersClient) GetCommandQueue(ctx context.Context, id int64) (*Command
 		return nil, err
 	}
 	return res, nil
+}
+
+func (s ServerDetails) String() string {
+	b := new(strings.Builder)
+
+	w := tabwriter.NewWriter(b, 10, 4, 1, ' ', 0)
+	fmt.Fprintf(w, "ID\t%d\n", s.ID)
+
+	fmt.Fprintf(w, "Name\t%v\n", s.Name)
+	fmt.Fprintf(w, "OsFamily\t%v\n", s.OsFamily)
+	fmt.Fprintf(w, "OsName\t%v\n", s.OsName)
+	fmt.Fprintf(w, "OsVersion\t%v\n", s.OsVersion)
+	fmt.Fprintf(w, "OsVersionID\t%v\n", s.OsVersionID)
+	fmt.Fprintf(w, "Uptime\t%v\n", s.Uptime)
+	fmt.Fprintf(w, "CPU\t%v\n", s.Detail.CPU)
+	fmt.Fprintf(w, "RAM\t%v\n", s.Detail.RAM)
+	fmt.Fprintf(w, "LAST_USER_LOGON\t%v\n", s.LastLoggedInUser)
+
+	count := 1
+	for _, d := range s.Detail.Volume {
+		fmt.Fprintf(w, "VOLUME %d\t%v\n", count, d.Label)
+		count++
+	}
+
+	w.Flush()
+
+	return b.String()
+
 }

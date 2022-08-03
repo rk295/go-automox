@@ -49,110 +49,227 @@ type Servers []ServerDetails
 
 // ServerDetails are the details related to a specific server in Automox
 type ServerDetails struct {
-	ID                            int64               `json:"id"`
-	OsVersionID                   int64               `json:"os_version_id"`
-	ServerGroupID                 int64               `json:"server_group_id"`
-	OrganizationID                int64               `json:"organization_id"`
-	UUID                          string              `json:"uuid"`
-	Name                          string              `json:"name"`
-	InstanceID                    string              `json:"instance_id"`
-	RefreshInterval               int64               `json:"refresh_interval"`
-	LastUpdateTime                string              `json:"last_update_time"`
-	LastRefreshTime               string              `json:"last_refresh_time"`
-	Uptime                        AutomoxUptime       `json:"uptime"`
-	NeedsReboot                   bool                `json:"needs_reboot"`
-	Timezone                      string              `json:"timezone"`
-	Tags                          []string            `json:"tags"`
-	Deleted                       bool                `json:"deleted"`
+	ID                            int                 `json:"id"`
+	AgentVersion                  string              `json:"agent_version"`
+	Commands                      []interface{}       `json:"commands"`
+	CompatibilityChecks           CompatibilityChecks `json:"compatibility_checks"`
+	Compliant                     bool                `json:"compliant"`
+	Connected                     bool                `json:"connected"`
 	CreateTime                    AutomoxTime         `json:"create_time"`
-	OsVersion                     string              `json:"os_version"`
-	OsName                        string              `json:"os_name"`
-	OsFamily                      string              `json:"os_family"`
+	CustomName                    string              `json:"custom_name"`
+	Deleted                       bool                `json:"deleted"`
+	Detail                        Detail              `json:"detail"`
+	DisplayName                   string              `json:"display_name"`
+	Exception                     bool                `json:"exception"`
+	InstanceID                    string              `json:"instance_id"`
 	IPAddrs                       []string            `json:"ip_addrs"`
 	IPAddrsPrivate                []string            `json:"ip_addrs_private"`
-	Patches                       int64               `json:"patches"`
-	Details                       Details             `json:"details"`
-	AgentVersion                  string              `json:"agent_version"`
-	CustomName                    string              `json:"custom_name"`
-	Exception                     bool                `json:"exception"`
-	TotalCount                    int64               `json:"total_count"`
 	IsCompatible                  bool                `json:"is_compatible"`
-	CompatibilityChecks           CompatibilityChecks `json:"compatibility_checks"`
-	PolicyStatus                  []PolicyStatus      `json:"policy_status"`
-	LastScanFailed                bool                `json:"last_scan_failed"`
-	Pending                       bool                `json:"pending"`
-	Compliant                     bool                `json:"compliant"`
-	DisplayName                   string              `json:"display_name"`
-	Commands                      []Commands          `json:"commands"`
-	PendingPatches                int64               `json:"pending_patches"`
-	Connected                     bool                `json:"connected"`
-	LastProcessTime               string              `json:"last_process_time"`
-	NextPatchTime                 string              `json:"next_patch_time"`
-	NotificationCount             int64               `json:"notification_count"`
-	RebootNotificationCount       int64               `json:"reboot_notification_count"`
-	PatchDeferralCount            int64               `json:"patch_deferral_count"`
 	IsDelayedByNotification       bool                `json:"is_delayed_by_notification"`
-	RebootIsDelayedByNotification bool                `json:"reboot_is_delayed_by_notification"`
 	IsDelayedByUser               bool                `json:"is_delayed_by_user"`
-	RebootIsDelayedByUser         bool                `json:"reboot_is_delayed_by_user"`
 	LastDisconnectTime            AutomoxTime         `json:"last_disconnect_time"`
-	NeedsAttention                bool                `json:"needs_attention"`
-	SerialNumber                  string              `json:"serial_number"`
-	Status                        Status              `json:"status"`
 	LastLoggedInUser              string              `json:"last_logged_in_user"`
+	LastProcessTime               AutomoxTime         `json:"last_process_time"`
+	LastRefreshTime               AutomoxTime         `json:"last_refresh_time"`
+	LastScanFailed                bool                `json:"last_scan_failed"`
+	LastUpdateTime                AutomoxTime         `json:"last_update_time"`
+	Name                          string              `json:"name"`
+	NeedsAttention                bool                `json:"needs_attention"`
+	NeedsReboot                   bool                `json:"needs_reboot"`
+	NextPatchTime                 AutomoxTime         `json:"next_patch_time"`
+	NotificationCount             int                 `json:"notification_count"`
+	OrganizationID                int                 `json:"organization_id"`
+	OrganizationalUnit            string              `json:"organizational_unit"`
+	OsFamily                      string              `json:"os_family"`
+	OsName                        string              `json:"os_name"`
+	OsVersion                     string              `json:"os_version"`
+	OsVersionID                   int                 `json:"os_version_id"`
+	PatchDeferralCount            int                 `json:"patch_deferral_count"`
+	Patches                       int                 `json:"patches"`
+	Pending                       bool                `json:"pending"`
+	PendingPatches                int                 `json:"pending_patches"`
+	PolicyStatus                  []PolicyStatus      `json:"policy_status"`
+	RebootDeferralCount           int                 `json:"reboot_deferral_count"`
+	RebootIsDelayedByNotification bool                `json:"reboot_is_delayed_by_notification"`
+	RebootIsDelayedByUser         bool                `json:"reboot_is_delayed_by_user"`
+	RebootNotificationCount       int                 `json:"reboot_notification_count"`
+	RefreshInterval               int                 `json:"refresh_interval"`
+	SerialNumber                  string              `json:"serial_number"`
+	ServerGroupID                 int                 `json:"server_group_id"`
+	ServerPolicies                []ServerPolicies    `json:"server_policies"`
+	Status                        Status              `json:"status"`
+	Tags                          []interface{}       `json:"tags"`
+	Timezone                      string              `json:"timezone"`
+	TotalCount                    int                 `json:"total_count"`
+	Uptime                        AutomoxUptime       `json:"uptime"`
+	UUID                          string              `json:"uuid"`
 }
-type Disks struct {
-	Size string `json:"SIZE"`
-	Type string `json:"TYPE"`
-}
-type Nics struct {
-	Connected bool     `json:"CONNECTED"`
-	Device    string   `json:"DEVICE"`
-	Ips       []string `json:"IPS"`
-	Mac       string   `json:"MAC"`
-	Type      string   `json:"TYPE"`
-	Vendor    string   `json:"VENDOR"`
-}
-type Details struct {
-	CPU        string  `json:"CPU"`
-	Disks      []Disks `json:"DISKS"`
-	Model      string  `json:"MODEL"`
-	Nics       []Nics  `json:"NICS"`
-	RAM        string  `json:"RAM"`
-	Serial     string  `json:"SERIAL"`
-	Servicetag string  `json:"SERVICETAG"`
-	Vendor     string  `json:"VENDOR"`
-	Version    string  `json:"VERSION"`
-}
+
 type CompatibilityChecks struct {
-	LowDiskspace                    bool `json:"low_diskspace"`
-	MissingSecureToken              bool `json:"missing_secure_token"`
-	AppStoreDisconnected            bool `json:"app_store_disconnected"`
-	MissingPowershell               bool `json:"missing_powershell"`
-	MissingWmiIntegrityCheck        bool `json:"missing_wmi_integrity_check"`
-	WsusDisconnected                bool `json:"wsus_disconnected"`
-	WindowsUpdateServerDisconnected bool `json:"windows_update_server_disconnected"`
+	AppStoreDisconnected bool `json:"app_store_disconnected"`
+	MissingSecureToken   bool `json:"missing_secure_token"`
+	LowDiskspace         bool `json:"low_diskspace"`
 }
+
+type UpdateSourceCheck struct {
+	Connected string `json:"CONNECTED"`
+	Error     string `json:"ERROR"`
+}
+
+type LastUserLogon struct {
+	User string `json:"USER"`
+	Time string `json:"TIME"`
+	Src  string `json:"SRC"`
+}
+
+type AutoUpdateOptions struct {
+	Options string `json:"OPTIONS"`
+	Enabled string `json:"ENABLED"`
+}
+
+type Nics struct {
+	Ips       []string `json:"IPS"`
+	Connected bool     `json:"CONNECTED"`
+	Vendor    string   `json:"VENDOR"`
+	Device    string   `json:"DEVICE"`
+	Type      string   `json:"TYPE"`
+	Mac       string   `json:"MAC"`
+}
+
+type Volume struct {
+	Label        string `json:"LABEL"`
+	Avail        string `json:"AVAIL"`
+	Free         string `json:"FREE"`
+	IsSystemDisk string `json:"IS_SYSTEM_DISK"`
+	Volume       string `json:"VOLUME"`
+	Fstype       string `json:"FSTYPE"`
+}
+
+type Detail struct {
+	Ips                []string          `json:"IPS"`
+	Model              string            `json:"MODEL"`
+	Serial             string            `json:"SERIAL"`
+	Servicetag         interface{}       `json:"SERVICETAG"`
+	Fqdns              []string          `json:"FQDNS"`
+	RAM                string            `json:"RAM"`
+	UpdateSourceCheck  UpdateSourceCheck `json:"UPDATE_SOURCE_CHECK"`
+	WmiIntegrityCheck  interface{}       `json:"WMI_INTEGRITY_CHECK"`
+	DistinguishedName  interface{}       `json:"DISTINGUISHED_NAME"`
+	Disks              []interface{}     `json:"DISKS"`
+	CPU                string            `json:"CPU"`
+	SecureTokenAccount string            `json:"SECURE_TOKEN_ACCOUNT"`
+	WsusConfig         interface{}       `json:"WSUS_CONFIG"`
+	Version            string            `json:"VERSION"`
+	LastUserLogon      LastUserLogon     `json:"LAST_USER_LOGON"`
+	AutoUpdateOptions  AutoUpdateOptions `json:"AUTO_UPDATE_OPTIONS"`
+	Vendor             string            `json:"VENDOR"`
+	PsVersion          interface{}       `json:"PS_VERSION"`
+	Nics               []Nics            `json:"NICS"`
+	Volume             []Volume          `json:"VOLUME"`
+}
+
 type PolicyStatus struct {
-	ID             int64  `json:"id"`
-	OrganizationID int64  `json:"organization_id"`
-	PolicyID       int64  `json:"policy_id"`
-	ServerID       int64  `json:"server_id"`
-	PolicyName     string `json:"policy_name"`
-	PolicyTypeName string `json:"policy_type_name"`
-	Status         int64  `json:"status"`
-	Result         string `json:"result"`
-	CreateTime     string `json:"create_time"`
+	ID              int         `json:"id"`
+	OrganizationID  int         `json:"organization_id"`
+	PolicyID        int         `json:"policy_id"`
+	ServerID        int         `json:"server_id"`
+	PolicyName      string      `json:"policy_name"`
+	PolicyTypeName  string      `json:"policy_type_name"`
+	Status          int         `json:"status"`
+	Result          string      `json:"result"`
+	CreateTime      AutomoxTime `json:"create_time"`
+	WillReboot      bool        `json:"will_reboot"`
+	PendingCount    int         `json:"pending_count"`
+	NextRemediation AutomoxTime `json:"next_remediation"`
 }
-type Commands struct {
-	CommandTypeName string    `json:"command_type_name"`
-	Args            string    `json:"args"`
-	ExecTime        time.Time `json:"exec_time"`
+
+type ServerPoliciesConfiguration struct {
+	AutoPatch                                       bool          `json:"auto_patch"`
+	PatchRule                                       string        `json:"patch_rule"`
+	AutoReboot                                      bool          `json:"auto_reboot"`
+	FilterType                                      string        `json:"filter_type"`
+	NotifyUser                                      bool          `json:"notify_user"`
+	DeviceFilters                                   []interface{} `json:"device_filters"`
+	IncludeOptional                                 bool          `json:"include_optional"`
+	NotifyRebootUser                                bool          `json:"notify_reboot_user"`
+	MissedPatchWindow                               bool          `json:"missed_patch_window"`
+	UseScheduledTimezone                            bool          `json:"use_scheduled_timezone"`
+	InstallDeferralEnabled                          bool          `json:"install_deferral_enabled"`
+	NotifyDeferredRebootUser                        bool          `json:"notify_deferred_reboot_user"`
+	NotifyUserMessageTimeout                        int           `json:"notify_user_message_timeout"`
+	CustomNotificationMaxDelays                     int           `json:"custom_notification_max_delays"`
+	PendingRebootDeferralEnabled                    bool          `json:"pending_reboot_deferral_enabled"`
+	CustomNotificationPatchMessage                  string        `json:"custom_notification_patch_message"`
+	NotifyUserAutoDeferralEnabled                   bool          `json:"notify_user_auto_deferral_enabled"`
+	CustomNotificationRebootMessage                 string        `json:"custom_notification_reboot_message"`
+	CustomNotificationDefermentPeriods              []int         `json:"custom_notification_deferment_periods"`
+	CustomNotificationPatchMessageMac               string        `json:"custom_notification_patch_message_mac"`
+	CustomNotificationRebootMessageMac              string        `json:"custom_notification_reboot_message_mac"`
+	CustomPendingRebootNotificationMessage          string        `json:"custom_pending_reboot_notification_message"`
+	NotifyDeferredRebootUserMessageTimeout          int           `json:"notify_deferred_reboot_user_message_timeout"`
+	CustomPendingRebootNotificationMaxDelays        int           `json:"custom_pending_reboot_notification_max_delays"`
+	CustomPendingRebootNotificationMessageMac       string        `json:"custom_pending_reboot_notification_message_mac"`
+	NotifyDeferredRebootUserAutoDeferralEnabled     bool          `json:"notify_deferred_reboot_user_auto_deferral_enabled"`
+	CustomPendingRebootNotificationDefermentPeriods []int         `json:"custom_pending_reboot_notification_deferment_periods"`
 }
+
+type Configuration struct {
+	Filters                                         []interface{} `json:"filters"`
+	AutoPatch                                       bool          `json:"auto_patch"`
+	PatchRule                                       string        `json:"patch_rule"`
+	AutoReboot                                      bool          `json:"auto_reboot"`
+	FilterType                                      string        `json:"filter_type"`
+	NotifyUser                                      bool          `json:"notify_user"`
+	DeviceFilters                                   []interface{} `json:"device_filters"`
+	AdvancedFilter                                  []interface{} `json:"advanced_filter"`
+	SeverityFilter                                  []string      `json:"severity_filter"`
+	IncludeOptional                                 bool          `json:"include_optional"`
+	NotifyRebootUser                                bool          `json:"notify_reboot_user"`
+	MissedPatchWindow                               bool          `json:"missed_patch_window"`
+	UseScheduledTimezone                            bool          `json:"use_scheduled_timezone"`
+	InstallDeferralEnabled                          bool          `json:"install_deferral_enabled"`
+	NotifyDeferredRebootUser                        bool          `json:"notify_deferred_reboot_user"`
+	NotifyUserMessageTimeout                        int           `json:"notify_user_message_timeout"`
+	CustomNotificationMaxDelays                     int           `json:"custom_notification_max_delays"`
+	PendingRebootDeferralEnabled                    bool          `json:"pending_reboot_deferral_enabled"`
+	CustomNotificationPatchMessage                  string        `json:"custom_notification_patch_message"`
+	NotifyUserAutoDeferralEnabled                   bool          `json:"notify_user_auto_deferral_enabled"`
+	CustomNotificationRebootMessage                 string        `json:"custom_notification_reboot_message"`
+	CustomNotificationDefermentPeriods              []int         `json:"custom_notification_deferment_periods"`
+	CustomNotificationPatchMessageMac               string        `json:"custom_notification_patch_message_mac"`
+	CustomNotificationRebootMessageMac              string        `json:"custom_notification_reboot_message_mac"`
+	CustomPendingRebootNotificationMessage          string        `json:"custom_pending_reboot_notification_message"`
+	NotifyDeferredRebootUserMessageTimeout          int           `json:"notify_deferred_reboot_user_message_timeout"`
+	CustomPendingRebootNotificationMaxDelays        int           `json:"custom_pending_reboot_notification_max_delays"`
+	CustomPendingRebootNotificationMessageMac       string        `json:"custom_pending_reboot_notification_message_mac"`
+	NotifyDeferredRebootUserAutoDeferralEnabled     bool          `json:"notify_deferred_reboot_user_auto_deferral_enabled"`
+	CustomPendingRebootNotificationDefermentPeriods []int         `json:"custom_pending_reboot_notification_deferment_periods"`
+}
+
+type ServerPolicies struct {
+	Configuration        ServerPoliciesConfiguration `json:"configuration,omitempty"`
+	CreateTime           AutomoxTime                 `json:"create_time"`
+	ID                   int                         `json:"id"`
+	Name                 string                      `json:"name"`
+	NextRemediation      AutomoxTime                 `json:"next_remediation"`
+	Notes                string                      `json:"notes"`
+	OrganizationID       int                         `json:"organization_id"`
+	PolicyTypeName       string                      `json:"policy_type_name"`
+	Result               string                      `json:"result"`
+	ScheduleDays         int                         `json:"schedule_days"`
+	ScheduleMonths       int                         `json:"schedule_months"`
+	ScheduleTime         string                      `json:"schedule_time"`
+	ScheduleWeeksOfMonth int                         `json:"schedule_weeks_of_month"`
+	ServerCount          int                         `json:"server_count"`
+	ServerGroups         []int                       `json:"server_groups"`
+	Status               int                         `json:"status"`
+}
+
 type PolicyStatuses struct {
 	ID        int  `json:"id"`
 	Compliant bool `json:"compliant"`
 }
+
 type Status struct {
 	DeviceStatus   string           `json:"device_status"`
 	AgentStatus    string           `json:"agent_status"`

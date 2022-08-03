@@ -1,3 +1,3 @@
 module github.com/rk295/go-automox
 
-go 1.18
+go 1.17
